@@ -259,3 +259,149 @@ Visit `http://127.0.0.1:8000/api/v1/` in your browser or API client. You should 
 ```
 
 Congratulations! You have successfully created your first API service using Django 🚀.
+
+
+After completing all the setup steps, it's time to dive into Firebase integration.
+
+
+#### Firebase Setup
+
+1. Login to Firebase.
+2. Create a new project and add a new app using the web app option.
+3. Copy the config file provided, which should look something like this:
+
+```json
+{
+    "apiKey": "<your_api_key>",
+    "authDomain": "your-project-id.firebaseapp.com",
+    "databaseURL": "https://your-project-id.firebaseio.com",
+    "projectId": "your-project-id",
+    "storageBucket": "your-project-id.appspot.com",
+    "messagingSenderId": "your_messaging_sender_id",
+    "appId": "your_app_id",
+    "measurementId": "your_measurement_id"
+}
+```
+
+4. Create a real-time database and set it to test mode since we are not using it in production as of now.
+
+#### Django Configuration
+
+1. Create a `.env` file and paste all the config details obtained from Firebase:
+
+```
+apiKey=your_api_key
+authDomain=your-project-id.firebaseapp.com
+databaseURL=https://your-project-id.firebaseio.com
+projectId=your-project-id
+storageBucket=your-project-id.appspot.com
+messagingSenderId=your_messaging_sender_id
+appId=your_app_id
+measurementId=your_measurement_id
+```
+
+2. Create a folder named `config`.
+3. Inside the `config` folder, create two files: `config.py` and `dbconfig.py`.
+4. Install the required packages:
+
+```bash
+pip install python-dotenv firebase-rest-api
+```
+
+#### `config.py`
+
+```python
+from dotenv import load_dotenv
+import os
+
+load_dotenv(f"{os.getcwd()}/.env")
+
+config = {
+    "apiKey": os.getenv("apiKey"),
+    "authDomain": os.getenv("authDomain"),
+    "databaseURL": os.getenv("databaseURL"),
+    "projectId": os.getenv("projectId"),
+    "storageBucket": os.getenv("storageBucket"),
+    "messagingSenderId": os.getenv("messagingSenderId"),
+    "appId": os.getenv("appId"),
+    "measurementId": os.getenv("measurementId")
+}
+```
+
+#### `dbconfig.py`
+
+```python
+import firebase
+from .config import config
+
+app = firebase.initialize_app(config)
+
+auth = app.auth()
+database = app.database()
+```
+
+### Creating CRUD Operations
+
+#### `user_info` Class in `views.py`
+
+```python
+from config.dbconfig import *
+from rest_framework import status
+from rest_framework.response import Response
+
+class userInfo(APIView):
+    def post(self, request):
+        # Create new user
+        pass
+
+    def get(self, request):
+        # Fetch users
+        pass
+
+    def put(self, request):
+        # Update user details
+        pass
+
+    def delete(self, request):
+        # Delete user
+        pass
+```
+
+#### `app/urls.py`
+
+```python
+from django.urls import path
+from .views import userInfo
+
+urlpatterns = [
+    # ...
+    path('user/', userInfo.as_view()),
+    # ...
+]
+```
+
+#### Serializers
+
+Create a `serializers.py` file inside the `app` directory:
+
+```python
+from rest_framework import serializers
+
+class CreateUserSerializer(serializers.Serializer):
+    # Serializer for creating user
+
+class UpdateUserSerializer(serializers.Serializer):
+    # Serializer for updating user
+```
+
+Replace the comments with the actual implementation of the CRUD operations as provided in your message.
+
+### Accessing the API
+
+Visit `http://127.0.0.1:8000/api/v1/user/` in your browser or API client to access the endpoints.
+
+### Example usage :
+- [CURD Operation](https://github.com/manishdashsharma/django-drf-firebase/blob/main/app/views.py)
+- [Serilizer](https://github.com/manishdashsharma/django-drf-firebase/blob/main/app/serializers.py)
+
+Congratulations! You have successfully set up a Django project with Django Rest Framework and Firebase integration for CRUD operations. 🚀
